@@ -5,4 +5,5 @@ class IngredientFilter(filters.SearchFilter):
     search_param = 'name'
 
 
-# class RecipesFilter(filters.SearchFilter):
+class RecipesFilter(filters.SearchFilter):
+    author = 'author_id'
