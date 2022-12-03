@@ -1,17 +1,22 @@
 from django.db import IntegrityError
+from django.shortcuts import get_object_or_404, get_list_or_404
 
 from rest_framework import filters, permissions, viewsets, status
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.views import APIView
+
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from djoser.views import UserViewSet as DjoserUserViewSet
 
-from recipes.models import Ingredient, Recipe, Tag
+from recipes.models import Ingredient, Recipe, Tag, Subscription
 from .filters import IngredientFilter, RecipesFilter
 from .pagination import ApiPagination
 from .permissions import IsAdmin
-from .serializers import AdminUserSerializer, IngredientSerializer, TagSerializer, UserSerializer, SignupSerializer, CastomeUserSerializer
+from .serializers import (IngredientSerializer, TagSerializer,
+                          CustomUserSerializer, PasswordSerializer,
+                          RecipeCreateSerializer, RecipeSerializer,
+                          SubscriptionSerializer)
 from users.models import User
 
 USER_CREATION_ERROR = ('Ошибка создания пользователя - '
@@ -36,12 +41,39 @@ class RecipesViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filterset_class = RecipesFilter
     pagination_class = ApiPagination
+    serializer_class = RecipeCreateSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return RecipeSerializer
+        return RecipeCreateSerializer
 
 
-class UserViewSet(DjoserUserViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = CastomeUserSerializer
+    serializer_class = CustomUserSerializer
     permission_classes = [permissions.AllowAny]
+
+
+    @action(detail=False, permission_classes=[IsAuthenticated])
+    def me(self, request):
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
+    def set_password(self, request):
+        user = request.user
+        serializer = PasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if user.check_password(serializer.validated_data['current_password']):
+            user.set_password(serializer.validated_data['new_password'])
+            user.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({"current_password": ["Неверный пароль."]}, status=status.HTTP_400_BAD_REQUEST)
+
+
 #     permission_classes = (IsAdmin,)
 #     filter_backends = (filters.SearchFilter,)
 #     lookup_field = 'username'
@@ -81,3 +113,29 @@ class UserViewSet(DjoserUserViewSet):
 #         return Response(USER_CREATION_ERROR,
 #                         status=status.HTTP_400_BAD_REQUEST)
 #     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class SubscriptionViewSet(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = SubscriptionSerializer
+
+    def get_queryset(self):
+        return get_list_or_404(User, author__user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        pk = kwargs.get('id', None)
+        author = get_object_or_404(User, pk=pk)
+        user = request.user
+    
+        if user == author:
+            return Response({'errors': 'Нельзя подписатся на самого себя.'}, 
+                            status=status.HTTP_400_BAD_REQUEST)
+        elif Subscription.objects.filter(author=author, user=user).exists():
+            return Response({'errors': 'Вы уже подписаны.'}, 
+                            status=status.HTTP_400_BAD_REQUEST)
+        
+        subscription = Subscription(author=author, user=user)
+        subscription.save()
+
+        serializer = SubscriptionSerializer(author, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
