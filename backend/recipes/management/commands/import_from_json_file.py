@@ -26,11 +26,11 @@ class Command(BaseCommand):
                         )
                         if created:
                             ingredient.save()
-                            display_format = "\nMovie, {}, has been saved."
+                            display_format = "\Ingredient, {}, has been saved."
                             print(display_format.format(ingredient))
                     except Exception as ex:
                         print(str(ex))
-                        msg = "\n\nSomething went wrong saving this movie: {}\n{}".format(name, str(ex))
+                        msg = "\n\nSomething went wrong saving this ingredient: {}\n{}".format(name, str(ex))
                         print(msg)
 
 
