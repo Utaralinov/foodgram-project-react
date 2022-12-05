@@ -5,7 +5,6 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
 
-
 User = get_user_model()
 
 INVALID_COLOR_ERROR = ('Цвет указан неверно!'
@@ -13,10 +12,12 @@ INVALID_COLOR_ERROR = ('Цвет указан неверно!'
                        'цифры с # в начале цвета')
 REGEX = re.compile(r'^#(?:[0-9a-fA-F]{3}){1,2}$')
 
+
 def hex_validator(value):
     if not REGEX.match(value):
         raise ValidationError(INVALID_COLOR_ERROR)
     return value
+
 
 class Tag(models.Model):
     """ -- Теги -- """
@@ -155,6 +156,7 @@ class Favorite(models.Model):
         constraints = [models.UniqueConstraint(
             fields=['user', 'recipe'],
             name='unique_favorite_recipe')]
+
 
 class ShoppingCart(models.Model):
     user = models.ForeignKey(

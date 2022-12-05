@@ -1,22 +1,20 @@
 from django.db.models import Sum
-from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import(AllowAny, IsAuthenticatedOrReadOnly,
-                                       IsAuthenticated)
+from rest_framework.permissions import (IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
+from .filters import IngredientFilter, RecipesFilter
 from .models import (Favorite, Ingredient, Recipe,
                      RecipeIngredient, ShoppingCart, Tag)
-from .filters import IngredientFilter, RecipesFilter
 from .permissions import IsAuthorOrAdmin
 from .serializers import (FavoriteSerializer, IngredientSerializer,
-                          MinifiedRecipeSerializer, RecipeCreateSerializer,
-                          RecipeSerializer, ShoppingCartSerializer,
-                          TagSerializer,)
+                          RecipeSerializer, RecipeCreateSerializer,
+                          ShoppingCartSerializer, TagSerializer,)
 from .utils import download_file_response
-
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -52,6 +50,8 @@ class RecipesViewSet(viewsets.ModelViewSet):
         if request.method == "DELETE":
             return self.delete_favorite(user, recipe)
 
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
     def add_favorite(self, user, recipe):
         if Favorite.objects.filter(user=user, recipe=recipe).exists():
             return Response({"error": "Этот рецепт уже есть в избранном."},
@@ -80,12 +80,14 @@ class RecipesViewSet(viewsets.ModelViewSet):
         if request.method == "DELETE":
             return self.delete_from_shopping_cart(user, recipe)
 
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
     def add_to_shopping_cart(self, user, recipe):
         if ShoppingCart.objects.filter(user=user, recipe=recipe).exists():
             return Response({"error": "Этот рецепт уже есть в списке покупок."},
                             status=status.HTTP_400_BAD_REQUEST)
         shopoing_cart = ShoppingCart.objects.create(user=user,
-                                                   recipe=recipe)
+                                                    recipe=recipe)
         serializer = ShoppingCartSerializer(shopoing_cart)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

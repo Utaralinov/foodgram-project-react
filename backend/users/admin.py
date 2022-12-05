@@ -15,6 +15,7 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = ('username', 'email',)
     empty_value_display = '-пусто-'
 
+
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'author')

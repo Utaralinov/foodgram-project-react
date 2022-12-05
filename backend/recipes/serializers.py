@@ -4,11 +4,11 @@ from rest_framework import serializers
 
 from users.serializers import CustomUserSerializer
 
-from .models import (Ingredient, Favorite, Recipe,
+from .models import (Favorite, Ingredient, Recipe,
                      RecipeIngredient, ShoppingCart, Tag)
 
-
 User = get_user_model()
+
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -81,7 +81,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     def create_recipe_ingredients(self, ingredients, recipe):
         for ingredient in ingredients:
-            ingredient_recipe = RecipeIngredient.objects.create(
+            RecipeIngredient.objects.create(
                 recipe=recipe,
                 ingredient_id=ingredient['ingredient']['id'],
                 amount=ingredient['amount']
@@ -119,8 +119,9 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return super().update(recipe, validated_data)
 
     def to_representation(self, recipe):
-        context={'request': self.context.get('request')}
+        context = {'request': self.context.get('request')}
         return RecipeSerializer(recipe, context=context).data
+
 
 class CommonFavoriteCartSerializer(serializers.ModelSerializer):
     recipe = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all())
@@ -140,9 +141,11 @@ class CommonFavoriteCartSerializer(serializers.ModelSerializer):
         context = {'request': self.context.get('request')}
         return MinifiedRecipeSerializer(instance.recipe, context=context).data
 
+
 class FavoriteSerializer(CommonFavoriteCartSerializer):
     class Meta(CommonFavoriteCartSerializer.Meta):
         model = Favorite
+
 
 class ShoppingCartSerializer(CommonFavoriteCartSerializer):
     class Meta(CommonFavoriteCartSerializer.Meta):

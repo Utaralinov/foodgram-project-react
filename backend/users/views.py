@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404, get_list_or_404
+from django.shortcuts import get_list_or_404, get_object_or_404
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -26,7 +26,7 @@ class SubscriptionViewSet(ModelViewSet):
         if user == author:
             return Response({'errors': 'Нельзя подписатся на самого себя.'},
                             status=status.HTTP_400_BAD_REQUEST)
-        elif Subscription.objects.filter(author=author, user=user).exists():
+        if Subscription.objects.filter(author=author, user=user).exists():
             return Response({'errors': 'Вы уже подписаны.'},
                             status=status.HTTP_400_BAD_REQUEST)
 

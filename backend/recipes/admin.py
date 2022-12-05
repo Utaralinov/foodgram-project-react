@@ -3,9 +3,11 @@ from django.contrib import admin
 from .models import (Favorite, Ingredient, Recipe,
                      RecipeIngredient, ShoppingCart, Tag)
 
+
 @admin.register(Tag)
 class AdminTag(admin.ModelAdmin):
     list_display = ('id', 'name', 'slug')
+
 
 @admin.register(Ingredient)
 class AdminIngredient(admin.ModelAdmin):
@@ -13,8 +15,10 @@ class AdminIngredient(admin.ModelAdmin):
     list_filter = ['name']
     search_fields = ('name',)
 
+
 class RecipeIngredientsInline(admin.TabularInline):
     model = RecipeIngredient
+
 
 @admin.register(Recipe)
 class AdminRecipe(admin.ModelAdmin):
@@ -25,9 +29,11 @@ class AdminRecipe(admin.ModelAdmin):
     def in_favorite(self, obj):
         return obj.favorites.all().count()
 
+
 @admin.register(Favorite)
 class AdminFavorite(admin.ModelAdmin):
     list_display = ('id', 'user', 'recipe')
+
 
 @admin.register(ShoppingCart)
 class AdminShoppingCart(admin.ModelAdmin):
