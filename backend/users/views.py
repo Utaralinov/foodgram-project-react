@@ -1,7 +1,5 @@
 from django.contrib.auth import get_user_model
-
 from django.shortcuts import get_object_or_404, get_list_or_404
-# from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -11,31 +9,6 @@ from .models import Subscription
 from .serializers import SubscriptionSerializer
 
 User = get_user_model()
-
-
-# class UserViewSet(UserViewSet):
-#     queryset = User.objects.all()
-#     serializer_class = CustomUserSerializer
-#     permission_classes = [permissions.AllowAny]
-
-
-    # @action(detail=False, permission_classes=[IsAuthenticated])
-    # def me(self, request):
-    #     serializer = self.get_serializer(request.user)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-    # @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
-    # def set_password(self, request):
-    #     user = request.user
-    #     serializer = PasswordSerializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     if user.check_password(serializer.validated_data['current_password']):
-    #         user.set_password(serializer.validated_data['new_password'])
-    #         user.save()
-    #         return Response(status=status.HTTP_204_NO_CONTENT)
-    #     else:
-    #         return Response({"current_password": ["Неверный пароль."]}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SubscriptionViewSet(ModelViewSet):
@@ -61,7 +34,6 @@ class SubscriptionViewSet(ModelViewSet):
         subscription.save()
 
         serializer = self.get_serializer(author, context={'request': request})
-        # serializer = SubscriptionSerializer(author, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):

@@ -133,7 +133,7 @@ class CommonFavoriteCartSerializer(serializers.ModelSerializer):
         user = data['user']
         recipe_id = data['recipe'].id
         if self.metaclass.model.objects.filter(user=user, recipe__id=recipe_id).exists():
-            raise ValidationError('Рецепт уже добавлен в избранное!')
+            raise serializers.ValidationError('Рецепт уже добавлен в избранное!')
         return data
 
     def to_representation(self, instance):

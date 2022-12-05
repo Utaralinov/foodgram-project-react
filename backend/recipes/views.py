@@ -59,7 +59,6 @@ class RecipesViewSet(viewsets.ModelViewSet):
                             )
         favorite = Favorite.objects.create(user=user, recipe=recipe)
         serializer = FavoriteSerializer(favorite)
-        # , context={"request": request}
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete_favorite(self, user, recipe):

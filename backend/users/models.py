@@ -4,7 +4,6 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 
-
 USERNAME_ME_ERROR = 'Username указан неверно! Нельзя указать username "me"'
 INVALID_CHARACTER_ERR = ('Username указан неверно!'
                          'Можно использовать только латинские буквы,'
