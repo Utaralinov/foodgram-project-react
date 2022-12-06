@@ -81,3 +81,4 @@ SECRET_KEY='Ваш секретный ключ проекта'
 
 Остановка проекта:
 <code>$ docker-compose down</code>
+ 
