@@ -1,11 +1,10 @@
 from django.contrib.auth import get_user_model
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
-
 from users.serializers import CustomUserSerializer
 
-from .models import (Favorite, Ingredient, Recipe,
-                     RecipeIngredient, ShoppingCart, Tag)
+from .models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                     ShoppingCart, Tag)
 
 User = get_user_model()
 
@@ -80,16 +79,16 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                   'image', 'name', 'text', 'cooking_time')
 
     def create_recipe_ingredients(self, ingredients, recipe):
-        recipeIngredients = []
+        recipe_ingredients = []
         for ingredient in ingredients:
-            recipeIngredient = RecipeIngredient(
+            recipe_ingredient = RecipeIngredient(
                 recipe=recipe,
                 ingredient_id=ingredient['ingredient']['id'],
                 amount=ingredient['amount']
             )
-            recipeIngredients.append(recipeIngredient)
+            recipe_ingredients.append(recipe_ingredient)
 
-        RecipeIngredient.objects.bulk_create(recipeIngredients)
+        RecipeIngredient.objects.bulk_create(recipe_ingredients)
 
     def validate_ingredients(self, value):
         validated_ingredients = []
