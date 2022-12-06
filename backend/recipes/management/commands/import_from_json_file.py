@@ -1,12 +1,9 @@
-"""
-Import json data from JSON file to Datababse
-"""
-import os
 import json
-from recipes.models import Ingredient
+import os
+
 from django.core.management.base import BaseCommand
-from datetime import datetime
 from foodgram.settings import BASE_DIR
+from recipes.models import Ingredient
 
 
 class Command(BaseCommand):
@@ -26,16 +23,12 @@ class Command(BaseCommand):
                         )
                         if created:
                             ingredient.save()
-                            display_format = "\Ingredient, {}, has been saved."
+                            display_format = "Ingredient, {}, has been saved."
                             print(display_format.format(ingredient))
                     except Exception as ex:
                         print(str(ex))
                         msg = "\n\nSomething went wrong saving this ingredient: {}\n{}".format(name, str(ex))
                         print(msg)
 
-
     def handle(self, *args, **options):
-        """
-        Call the function to import data
-        """
         self.import_movie_from_file()

@@ -19,7 +19,7 @@ class SubscriptionViewSet(ModelViewSet):
         return get_list_or_404(User, author__user=self.request.user)
 
     def create(self, request, *args, **kwargs):
-        pk = kwargs.get('id', None)
+        pk = kwargs.get('id')
         author = get_object_or_404(User, pk=pk)
         user = request.user
 
@@ -37,7 +37,7 @@ class SubscriptionViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
-        pk = kwargs.get('id', None)
+        pk = kwargs.get('id')
         author = get_object_or_404(User, pk=pk)
         user = request.user
 

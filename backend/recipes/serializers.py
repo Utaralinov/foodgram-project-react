@@ -80,12 +80,16 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                   'image', 'name', 'text', 'cooking_time')
 
     def create_recipe_ingredients(self, ingredients, recipe):
+        recipeIngredients = []
         for ingredient in ingredients:
-            RecipeIngredient.objects.create(
+            recipeIngredient = RecipeIngredient(
                 recipe=recipe,
                 ingredient_id=ingredient['ingredient']['id'],
                 amount=ingredient['amount']
             )
+            recipeIngredients.append(recipeIngredient)
+
+        RecipeIngredient.objects.bulk_create(recipeIngredients)
 
     def validate_ingredients(self, value):
         validated_ingredients = []
