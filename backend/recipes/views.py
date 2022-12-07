@@ -63,13 +63,13 @@ class RecipesViewSet(viewsets.ModelViewSet):
         if model_class.objects.filter(user=user, recipe=recipe).exists():
             return Response({"error": f"Этот рецепт уже есть в {model_class._meta.verbose_name.title()}."},
                             status=status.HTTP_400_BAD_REQUEST)
-        object = model_class.objects.create(user=user, recipe=recipe)
-        serializer = serializer_class(object)
+        model = model_class.objects.create(user=user, recipe=recipe)
+        serializer = serializer_class(model)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete_user_recipe_model(self, user, recipe, model_class):
-        object = model_class.objects.filter(user=user, recipe=recipe)
-        if not object.exists():
+        model = model_class.objects.filter(user=user, recipe=recipe)
+        if not model.exists():
             return Response({"error": f"Этого рецепта нет в {model_class._meta.verbose_name.title()}."},
                             status=status.HTTP_400_BAD_REQUEST)
 
