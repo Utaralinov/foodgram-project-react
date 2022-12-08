@@ -73,7 +73,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
             return Response({"error": f"Этого рецепта нет в {model_class._meta.verbose_name.title()}."},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        object.delete()
+        model.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=["GET"], permission_classes=[IsAuthenticated])
