@@ -8,7 +8,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv('SECRET_KEY', default='som3-s3cre1-key')
 
-DEBUG = os.getenv('DEBUG', default=False)
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -105,7 +105,7 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
     'DEFAULT_PAGINATION_CLASS': 'recipes.pagination.CustomPaginator',
-    'PAGE_SIZE': 10,
+    'PAGE_SIZE': 6,
 }
 
 DJOSER = {

@@ -70,7 +70,6 @@ jobs:
             rm .env
             touch .env
             echo "
-              DEBUG=${{ secrets.DEBUG }}
               POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
               DB_ENGINE=${{ secrets.DB_ENGINE }}
               DB_NAME=${{ secrets.DB_NAME }}
