@@ -8,14 +8,26 @@ services:
     env_file:
       - ./.env
 
-  frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+  web:
+    image: nursultan002/foodgram:latest
+    restart: always
     volumes:
-      - ../frontend/:/app/result_build/
+      - static_value:/app/static/
+      - media_value:/app/media/
+    depends_on:
+      - db
+    container_name: web
+    env_file:
+      - ./.env
+  frontend:
+    image: nursultan002/foodgram_frontend:latest
+    volumes:
+      - frontend_build:/app/result_build/build/
+    depends_on:
+      - web
   nginx:
     image: nginx:1.19.3
+    restart: always
     ports:
       - "80:80"
     volumes:

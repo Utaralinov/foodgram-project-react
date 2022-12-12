@@ -106,8 +106,8 @@ class Api {
   getRecipes ({
     page = 1,
     limit = 6,
-    is_favorited = 0,
-    is_in_shopping_cart = 0,
+    is_favorited = false,
+    is_in_shopping_cart = false,
     author,
     tags
   } = {}) {
